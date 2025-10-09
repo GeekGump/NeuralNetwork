@@ -66,8 +66,9 @@ test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=
 
 # 定义损失函数和优化器
 criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, weight_decay=1e-4)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=60, gamma=0.2)
+optimizer = torch.optim.SGD(model.parameters(),momentum=0.9, lr=0.1, weight_decay=1e-4)
+scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160, 200], gamma=0.2)
+# scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=60, gamma=0.2)
 # torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=10, T_mult=2, eta_min=1e-6)
 # StepLR(optimizer, step_size=10, gamma=0.1)
 num_epochs = 30
