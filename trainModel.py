@@ -9,7 +9,7 @@ import torchvision
 import os
 import datetime
 
-model,model_name = Loader.GetNet(NetType=NetType.MultiLayerGroupNet, num_classes=100)
+model,model_name = Loader.GetNet(NetType=NetType.preresnet110, num_classes=100)
 model_path = "Model/" + model_name+ ".pth"
 load_model = False
 
@@ -61,8 +61,8 @@ test_dataset = torchvision.datasets.CIFAR100(
     download=False,
     transform=test_transforms
 )
-train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0)
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, num_workers=0)
+test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers=0)
 
 # 定义损失函数和优化器
 criterion = torch.nn.CrossEntropyLoss()
@@ -71,7 +71,7 @@ scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120,
 # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=60, gamma=0.2)
 # torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=10, T_mult=2, eta_min=1e-6)
 # StepLR(optimizer, step_size=10, gamma=0.1)
-num_epochs = 30
+num_epochs = 200
 best_accuracy = 0
 
 loss_history = []
