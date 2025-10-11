@@ -9,7 +9,7 @@ import torchvision
 import os
 import datetime
 
-model,model_name = Loader.GetNet(NetType=NetType.preresnet110, num_classes=100)
+model,model_name = Loader.GetNet(NetType=NetType.densenet121, num_classes=100)
 model_path = "Model/" + model_name+ ".pth"
 load_model = False
 

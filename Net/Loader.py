@@ -1,13 +1,12 @@
 from Net.MyNet import MyNet  # 导入自己的网络
 from Net.preresnet import preresnet110  # 导入预激活 ResNet18
 from Net.resnet import resnet20
-from Net.densenet import densenet100bc  # 导入 DenseNet121
 from Net.MultiLayerGroupNet import MultiLayerGroupNet  # 导入多层分组网络
 from enum import Enum
 class NetType(Enum):
     MyNet = 1
     preresnet110 = 2
-    densenet100bc = 3
+    densenet121 = 3
     MultiLayerGroupNet = 4
     resnet20 = 5
     
@@ -20,9 +19,10 @@ def GetNet(NetType = NetType, num_classes=100):
     elif NetType == NetType.preresnet110:
         net = preresnet110(num_classes=num_classes)
         model_name = "preresnet110"
-    elif  NetType == NetType.densenet100bc:
-        net = densenet100bc(num_classes=num_classes)
-        model_name = "densenet100bc"
+    elif  NetType == NetType.densenet121:
+        from Net.densenet import densenet121
+        net = densenet121(num_classes=num_classes)
+        model_name = "densenet121"
     elif NetType == NetType.resnet20:
         net = resnet20(num_classes=num_classes)
         model_name = "resnet20"
