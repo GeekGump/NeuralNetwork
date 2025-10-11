@@ -67,11 +67,11 @@ test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_worker
 # 定义损失函数和优化器
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(),momentum=0.9, lr=0.1, weight_decay=1e-4)
-scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 120, 160, 200], gamma=0.2)
+scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[25, 30, 35], gamma=0.2)
 # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=60, gamma=0.2)
 # torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, T_0=10, T_mult=2, eta_min=1e-6)
 # StepLR(optimizer, step_size=10, gamma=0.1)
-num_epochs = 200
+num_epochs = 40
 best_accuracy = 0
 
 loss_history = []
@@ -124,7 +124,7 @@ for epoch in range(num_epochs):
         
     formatted_loss = [f"{x:.2f}" for x in loss_history]
     formatted_loss = [float(x) for x in formatted_loss]
-    print("loss_history:",formatted_loss[-10:])  # 输出：['0.12', '0.65', '0.99', '0.46']
+    print("loss_history (last 10):",formatted_loss[-10:])  # 输出：['0.12', '0.65', '0.99', '0.46']
     print("accuracy_history (last 10):", accuracy_history[-10:])
     print("  ")
 
@@ -188,7 +188,7 @@ def save_float_lists_to_txt(name,list1, list2, output_path="float_data.txt"):
 
 # 调用函数保存数据
 save_float_lists_to_txt(
-    "Example Data",
+    model_name,
     list1=loss_history,
     list2=accuracy_history,
     output_path="./Record/record.txt"  # 自定义路径

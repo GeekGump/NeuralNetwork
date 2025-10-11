@@ -2,16 +2,18 @@ import torch
 import torch.nn as nn
 
 class FunctionalModule(nn.Module):
-    def __init__(self, in_channels):
+    def __init__(self, in_channels,isLast=False):
         super(FunctionalModule, self).__init__()
+        self.isLast = isLast
+        self.avgpool = None
+        if self.isLast :
+            self.avgpool = nn.AdaptiveAvgPool2d((2, 2))
+            self.Linear = nn.Linear(in_channels*2*2, in_channels)
         # 双重卷积 + ReLU（保持通道和尺寸不变）
         self.double_conv = nn.Sequential(
             nn.Conv2d(in_channels, in_channels, kernel_size=3, padding=1),
             nn.BatchNorm2d(in_channels),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(in_channels, in_channels, kernel_size=3, padding=1),
-            nn.BatchNorm2d(in_channels),
-            nn.ReLU(inplace=True)  # 双重卷积后加ReLU，增强非线性
+            nn.ReLU(inplace=True)
         )
         # 添加SE注意力机制
         self.se = nn.Sequential(
@@ -25,14 +27,15 @@ class FunctionalModule(nn.Module):
         self.relu = nn.ReLU(inplace=True)
     
     def forward(self, x):
-        indentity = x  # 残差连接
         out = self.double_conv(x)
         # SE注意力权重
         se_weight = self.se(out)
         out = out * se_weight
 
-       
-        return self.relu(out + indentity)  # 残差连接
+        if self.isLast :
+           return self.Linear(self.avgpool(out).view(out.size(0), -1))  # 全局平均池化 + Linear
+        else:
+            return self.relu(out)  # 残差连接
     
 class MultiLayerGroupNet(nn.Module):
     def __init__(self, n_layers, m_base, num_classes, input_size=32):
@@ -129,7 +132,15 @@ class MultiLayerGroupNet(nn.Module):
         # 步骤3：分类输出（先自适应平均池化到固定尺寸，再展平并分类）
         # --------------------------
         x = self.avgpool(x)  # 将空间尺寸池化到 (2,2)
+        print(x.shape)
         x = x.view(batch_size, -1)  # 展平特征图：(batch, total_channels*2*2)
         logits = self.classifier(x)  # (batch, num_classes)
 
         return logits
+    
+if __name__ == "__main__":
+    # 测试网络结构
+    model = MultiLayerGroupNet(n_layers=3, m_base=32, num_classes=100)
+    x = torch.randn(1, 3, 32, 32)  # 假设输入是32x32的RGB图像
+    out = model(x)
+    print(out.shape)  # 应该输出 (1, 100)

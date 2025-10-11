@@ -13,9 +13,14 @@ model_name = "MultiLayerGroupNetV2"
 model = Loader.GetNet(NetType=NetType.MultiLayerGroupNet, num_classes=100)
 model_path = "Model/" + model_name+ ".pth"
 
-import torch_directml
-device = torch_directml.device()
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# set up device
+device = torch.device("cpu")
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    import torch_directml
+    device = torch_directml.device()
+print(device)
 
 print(device)
 
