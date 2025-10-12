@@ -8,23 +8,29 @@ import matplotlib.pyplot as plt
 import torchvision
 import os
 import datetime
+import time
 
-model_name = "MultiLayerGroupNetV2"
-model = Loader.GetNet(NetType=NetType.MultiLayerGroupNet, num_classes=100)
+start_time = time.time()
+model,model_name = Loader.GetNet(NetType=NetType.densenet121, num_classes=100)
 model_path = "Model/" + model_name+ ".pth"
 
-# set up device
+# set up device and data root
 device = torch.device("cpu")
+data_root = "./data"
 if torch.cuda.is_available():
     device = torch.device("cuda")
 else:
     import torch_directml
     device = torch_directml.device()
+    data_root = "D:\\SHIVAAAA\\Documents\\MinGW\\NeuralNetwork\\Dataset"
 print(device)
 
-print(device)
-
-model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu')))
+# if model_path exists, load the model
+if os.path.exists(model_path):
+    model.load_state_dict(torch.load(model_path,map_location=torch.device('cpu')))
+else:
+    print("Model not found!")
+    exit()
 model = model.to(device)
 model.eval()
 
@@ -36,14 +42,10 @@ test_transforms = transforms.Compose([
 ])
 
 print("Loading data...")
-# data_root = "CIFAR-100-dataset-main"
-# train_data = CIFAR100CustomDataset(root=data_root, split="train", transforms=train_transforms)
-# test_data = CIFAR100CustomDataset(root=data_root, split="test", transforms=test_transforms)
-
  
 test_dataset = torchvision.datasets.CIFAR100(
-    root='./data',
-    train=True,                              # 加载测试集
+    root=data_root,
+    train=False,                              # 加载测试集
     download=False,
     transform=test_transforms
 )
@@ -59,6 +61,8 @@ with torch.no_grad():
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
+end_time = time.time()
+print("Time taken: "+str(end_time-start_time)+" seconds")
 print("Correct/Total:  "+str(correct)+"/" + str(total))
 accuracy = 100 * correct / total
-print(accuracy)
+print("Accuracy: "+str(accuracy))
