@@ -1,0 +1,9 @@
+{
+    "MyNet": {
+        "trained_epoch": 0,
+        "train_losses": [],
+        "val_accs": [],
+        "best_val_acc": 0.0,
+        "best_epoch": 0
+    }
+}

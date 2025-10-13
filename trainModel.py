@@ -196,13 +196,13 @@ save_float_lists_to_txt(
 
 plot_float_array(
     loss_history, 
-    title=model_name+"Training Loss Over Epochs", 
+    title=model_name+"  Training Loss Over Epochs", 
     save_path="Record/"+ model_name +"loss_curve.png",
     color='blue'
 )
 plot_float_array(
     accuracy_history, 
-    title=model_name+"Test Accuracy Over Epochs", 
+    title=model_name+"  Test Accuracy Over Epochs", 
     save_path="Record/"+ model_name +"accuracy_curve.png",
     color='red'
 )

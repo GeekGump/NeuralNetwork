@@ -3,6 +3,7 @@ from Net.preresnet import preresnet110  # 导入预激活 ResNet18
 from Net.resnet import resnet20
 from Net.MultiLayerGroupNet import MultiLayerGroupNet  # 导入多层分组网络
 from enum import Enum
+
 class NetType(Enum):
     MyNet = 1
     preresnet110 = 2
@@ -13,29 +14,23 @@ class NetType(Enum):
     
 
 def GetNet(NetType = NetType, num_classes=100):
-    model_name = ""
     if NetType == NetType.MyNet:
         net = MyNet(num_classes=num_classes)
-        model_name = "MyNet"
     elif NetType == NetType.preresnet110:
         net = preresnet110(num_classes=num_classes)
-        model_name = "preresnet110"
     elif  NetType == NetType.densenet121:
         from Net.densenet import densenet121
         net = densenet121()
-        model_name = "densenet121"
     elif NetType == NetType.resnet20:
         net = resnet20(num_classes=num_classes)
-        model_name = "resnet20"
     elif NetType == NetType.MultiLayerGroupNet:
         net = MultiLayerGroupNet(n_layers=3, m_base=32, num_classes=num_classes, input_size=32)
-        model_name = "MultiLayerGroupNet"
     elif NetType == NetType.senet:
         from Net.senet import se_resnext29_8x64d
         net = se_resnext29_8x64d(num_classes=num_classes)
-        model_name = "senet"
+
     else:
         raise ValueError("Unsupported network architecture: {}".format(NetType))
-    return net, model_name
+    return net
 
 #         net = MultiLayerGroupNet(n_layers=3, m_base=32, num_classes=num_classes, input_size=32)
