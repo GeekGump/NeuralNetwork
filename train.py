@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 # 数据集配置
 IS_LOAD_HISTORY = False           # 是否加载历史记录（如需从头开始训练改为False）   
   
-NET_TYPE = NetType.MyNet  # 网络类型（对应Net.Loader中的枚举）
+NET_TYPE = NetType.GroupConvClassifier  # 网络类型（对应Net.Loader中的枚举）
 MODEL_NAME = NET_TYPE.name  # 模型名称（用于保存文件命名）
 NUM_CLASSES = 100
 
